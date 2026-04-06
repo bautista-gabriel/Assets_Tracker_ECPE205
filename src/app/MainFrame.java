@@ -22,52 +22,52 @@ public class MainFrame extends JFrame {
         //add(new Providers(), BorderLayout.CENTER);
 
         JPanel SidePanel = new JPanel();
-        SidePanel.setPreferredSize(new Dimension(200, 0));
-        SidePanel.setLayout(new BoxLayout(SidePanel, BoxLayout.Y_AXIS));
-        SidePanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+            SidePanel.setPreferredSize(new Dimension(200, 0));
+            SidePanel.setLayout(new BoxLayout(SidePanel, BoxLayout.Y_AXIS));
+            SidePanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
-        JButton dashboardBtn = new JButton("Dashboard");
-        dashboardBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        dashboardBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JButton providersBtn = new JButton("Banks and E-Wallets");
-        providersBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        providersBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JButton subAccBtn = new JButton("Sub Accounts");
-        subAccBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        subAccBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JButton dashboardBtn = new JButton("Dashboard");
+            dashboardBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            dashboardBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JButton providersBtn = new JButton("Banks and E-Wallets");
+            providersBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            providersBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JButton subAccBtn = new JButton("Sub Accounts");
+            subAccBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            subAccBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        SidePanel.add(dashboardBtn);
-        SidePanel.add(Box.createVerticalStrut(10));
-        SidePanel.add(providersBtn);
-        SidePanel.add(Box.createVerticalStrut(10));
-        SidePanel.add(subAccBtn);
+            SidePanel.add(dashboardBtn);
+            SidePanel.add(Box.createVerticalStrut(10));
+            SidePanel.add(providersBtn);
+            SidePanel.add(Box.createVerticalStrut(10));
+            SidePanel.add(subAccBtn);
 
 
-        SidePanel.setBackground(Color.gray);
-        add(SidePanel, BorderLayout.WEST);
+            SidePanel.setBackground(Color.gray);
+            add(SidePanel, BorderLayout.WEST);
 
-        CardLayout cardLayout = new CardLayout();
-        JPanel mainPanel = new JPanel(cardLayout);
+             CardLayout cardLayout = new CardLayout();
+             JPanel mainPanel = new JPanel(cardLayout);
 
-        mainPanel.add(new Dashboard(), "Dashboard");
-        mainPanel.add(new Providers(), "Providers");
-        mainPanel.add(new SubAcc(), "SubAcc");
+            mainPanel.add(new Dashboard(), "Dashboard");
+            mainPanel.add(new Providers(), "Providers");
+            mainPanel.add(new SubAcc(), "SubAcc");
 
-        add(mainPanel, BorderLayout.CENTER);
+             add(mainPanel, BorderLayout.CENTER);
 
-        dashboardBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Dashboard");
-            }
-        });
+            dashboardBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    cardLayout.show(mainPanel, "Dashboard");
+                }
+            });
 
-        providersBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Providers");
-            }
-        });
+            providersBtn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    cardLayout.show(mainPanel, "Providers");
+                }
+            });
 
         subAccBtn.addActionListener(new ActionListener() {
             @Override
