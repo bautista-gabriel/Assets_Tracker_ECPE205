@@ -43,6 +43,7 @@ public class Dashboard extends JPanel implements ActionListener {
 
         //Combo box para sa banks
         String[] BankNames = {
+                "   ",
                 "BDO Unibank",
                 "Bank of the Philippine Islands (BPI)",
                 "Land Bank of the Philippines",
@@ -69,6 +70,7 @@ public class Dashboard extends JPanel implements ActionListener {
 
         //combo box para sa e wallets
         String[] EwalletNames = {
+                "  ",
                 "GCash",
                 "Maya",
                 "GoTyme",
