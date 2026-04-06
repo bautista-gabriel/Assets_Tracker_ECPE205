@@ -6,8 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class Providers extends JPanel implements ActionListener {
-    private JLabel countLabel;
-    private JLabel average;
 
     public  Providers() {
         setLayout(new BorderLayout());
@@ -61,6 +59,14 @@ public class Providers extends JPanel implements ActionListener {
         centerPanel.add(ProvidersList);
         centerPanel.add(Box.createVerticalStrut(20));
 
+        // text field for inputting amount
+        JTextField amountField = new JTextField();
+        amountField.setMaximumSize(new Dimension(250, 30));
+        amountField.setPreferredSize(new Dimension(250, 30));
+        amountField.setBorder(BorderFactory.createTitledBorder("Amount"));
+        centerPanel.add(amountField);
+        centerPanel.add(Box.createVerticalStrut(20));
+        
         //Button
         JButton saveBtn = new JButton("Save");
         saveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
