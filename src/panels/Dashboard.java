@@ -4,18 +4,6 @@ import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.awt.*;
 
-/**
- * Dashboard panel showing summary/statistics.
- *
- * ASSIGNED TO: Student 2 (Main Frame / Dashboard Owner)
- *
- * TODO for Student 2:
- * - Display total number of students -done
- * - Add a welcome message or app logo
- * - Show summary statistics (e.g., average age, total count) -done
- * - Add a refresh button to update the stats -done
- * - Make it visually appealing (use colors, larger fonts, icons)
- */
 public class Dashboard extends JPanel {
     private JLabel countLabel;
     private JLabel average;
