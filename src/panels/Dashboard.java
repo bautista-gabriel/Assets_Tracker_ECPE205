@@ -42,8 +42,9 @@ public class Dashboard extends JPanel implements ActionListener {
         leftPanel.setBorder(BorderFactory.createEmptyBorder(20,40,10,40));
 
         //Combo box para sa banks
-        String[] BankNames = {
+        String[] Providers = {
                 "   ",
+                "---- Banks ----",
                 "BDO Unibank",
                 "Bank of the Philippine Islands (BPI)",
                 "Land Bank of the Philippines",
@@ -59,18 +60,8 @@ public class Dashboard extends JPanel implements ActionListener {
                 "Philippine Bank of Communications (PBCom)",
                 "Philippine Veterans Bank",
                 "Philtrust Bank",
-                "Bank of Commerce"
-        };
-
-        JComboBox BankList = new JComboBox(BankNames);
-        BankList.setMaximumSize(new Dimension(250, 30));
-        BankList.setPreferredSize(new Dimension(250, 30));
-        BankList.setSelectedIndex(0);
-        BankList.addActionListener(this);
-
-        //combo box para sa e wallets
-        String[] EwalletNames = {
-                "  ",
+                "Bank of Commerce",
+                "---- E-Wallet ----",
                 "GCash",
                 "Maya",
                 "GoTyme",
@@ -80,13 +71,13 @@ public class Dashboard extends JPanel implements ActionListener {
                 "GrabPay",
                 "ShopeePay"
         };
-        JComboBox EwalletList = new JComboBox(EwalletNames);
-        EwalletList.setMaximumSize(new Dimension(250, 30));
-        EwalletList.setPreferredSize(new Dimension(250, 30));
-        EwalletList.setSelectedIndex(0);
-        EwalletList.addActionListener( this);
-        leftPanel.add(EwalletList);
-        leftPanel.add(BankList);
+
+        JComboBox ProvidersList = new JComboBox(Providers);
+        ProvidersList.setMaximumSize(new Dimension(250, 30));
+        ProvidersList.setPreferredSize(new Dimension(250, 30));
+        ProvidersList.setSelectedIndex(0);
+        ProvidersList.addActionListener(this);
+        leftPanel.add(ProvidersList);
         centerPanel.add(Box.createVerticalStrut(20));
 
         //Button
