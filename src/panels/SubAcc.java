@@ -4,12 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Dashboard extends JPanel implements ActionListener {
-    public  Dashboard(){
-        setLayout(new BorderLayout());
+public class SubAcc  extends JPanel implements ActionListener {
 
+    public SubAcc(){
+        setLayout(new BorderLayout());
          // Welcome Message
-        JLabel title = new JLabel("Dashboard", SwingConstants.CENTER);
+        JLabel title = new JLabel("Sub Accounts", SwingConstants.CENTER);
         title.setFont(new Font("Times New Roman", Font.BOLD, 28));
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         add(title, BorderLayout.NORTH);
@@ -20,6 +20,8 @@ public class Dashboard extends JPanel implements ActionListener {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 10, 40));
 
     }
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
