@@ -1,9 +1,9 @@
 package panels;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class Providers extends JPanel implements ActionListener {
     private JLabel countLabel;
@@ -23,7 +23,7 @@ public class Providers extends JPanel implements ActionListener {
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 10, 40));
 
-        //Combo box para sa banks
+        //Combo box para sa banks and e wallets
         String[] Providers = {
                 "---- Banks ----",
                 "BDO Unibank",
@@ -41,14 +41,14 @@ public class Providers extends JPanel implements ActionListener {
                 "Philippine Bank of Communications (PBCom)",
                 "Philippine Veterans Bank",
                 "Philtrust Bank",
-                "Bank of Commerce",
+                "Bank of Commerce",  
+                "Tonik",
+                "UNO Digital Bank",
+                "UnionDigital Bank", 
+                "GoTyme",
                 "---- E-Wallet ----",
                 "GCash",
                 "Maya",
-                "GoTyme",
-                "Tonik",
-                "UNO Digital Bank",
-                "UnionDigital Bank",
                 "GrabPay",
                 "ShopeePay"
         };
