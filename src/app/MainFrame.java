@@ -1,14 +1,9 @@
 package app;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-//import panels.Dashboard;
+import javax.swing.*;
 import panels.Dashboard;
 import panels.Providers;
 import panels.SubAcc;
@@ -51,24 +46,33 @@ public class MainFrame extends JFrame {
             SidePanel.setBackground(Color.gray);
             add(SidePanel, BorderLayout.WEST);
 
+             CardLayout cardLayout = new CardLayout();
+             JPanel mainPanel = new JPanel(cardLayout);
+
+            mainPanel.add(new Dashboard(), "Dashboard");
+            mainPanel.add(new Providers(), "Providers");
+            mainPanel.add(new SubAcc(), "SubAcc");
+
+             add(mainPanel, BorderLayout.CENTER);
+
             dashboardBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    add(new Dashboard(), BorderLayout.CENTER);
+                    cardLayout.show(mainPanel, "Dashboard");
                 }
             });
 
             providersBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    add(new Providers(), BorderLayout.CENTER);
+                    cardLayout.show(mainPanel, "Providers");
                 }
             });
 
         subAccBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                add(new SubAcc(), BorderLayout.CENTER);
+                cardLayout.show(mainPanel, "SubAcc");
             }
         });
 
