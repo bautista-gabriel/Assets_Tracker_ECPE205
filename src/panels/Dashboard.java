@@ -1,6 +1,6 @@
 package panels;
-import database.DatabaseConnection;
 
+import database.DatabaseConnection;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -16,56 +16,65 @@ public class Dashboard extends JPanel {
     public Dashboard() {
         setLayout(new BorderLayout());
 
-        // Welcome Message
-        JLabel title = new JLabel("Dashboard", SwingConstants.CENTER);
-        title.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
-        add(title, BorderLayout.NORTH);
+        // Header Panel to hold Title and Total
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 
-        // Center content
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 10, 40));
+
 
         totalLabel = new JLabel("Total Assets: ₱0.00");
+        totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(totalLabel, BorderLayout.NORTH);
+        totalLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+
+
+        headerPanel.add(totalLabel);
+        add(headerPanel, BorderLayout.NORTH);
 
         String[] columns = {"Provider", "Type", "Amount"};
-        tableModel = new DefaultTableModel(columns, 0);
+
+        // FIX TO MAKE TABLE READ ONLY
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         assetsTable = new JTable(tableModel);
+        assetsTable.getTableHeader().setReorderingAllowed(false);
+        assetsTable.setRowHeight(25);
 
         JScrollPane scrollPane = new JScrollPane(assetsTable);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 40, 20, 40));
         add(scrollPane, BorderLayout.CENTER);
 
-            updateDashboard();
+        updateDashboard();
     }
 
     public void updateDashboard() {
         tableModel.setRowCount(0);
-        String sql = "SELECT provider_name, SUM(amount) AS total_amount from assets GROUP BY provider_name ORDER BY provider_name";
+        String sql = "SELECT provider_name, SUM(amount) AS total_amount FROM assets GROUP BY provider_name ORDER BY provider_name";
 
         double totalAssets = 0.0;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
+
             while (rs.next()) {
                 String provider = rs.getString("provider_name");
                 double amount = rs.getDouble("total_amount");
-                String type;
+                String type = (provider.equals("GCash") || provider.equals("Maya") ||
+                        provider.equals("GrabPay") || provider.equals("ShopeePay")) ? "E-Wallet" : "Bank";
 
-                if (provider.equals("GCash") || provider.equals("Maya") || provider.equals("GrabPay") || provider.equals("ShopeePay")) {
-                    type = "E-Wallet";
-                } else {
-                    type = "Bank";
-                }
-                tableModel.addRow(new Object[]{provider, type, String.format("₱%.2f", amount)});
+                // FIX to have
+                tableModel.addRow(new Object[]{provider, type, String.format("₱%,.2f", amount)});
                 totalAssets += amount;
-
-                totalLabel.setText("Total Assets: " + String.format("₱%.2f", totalAssets));
             }
+            totalLabel.setText("Total Assets: " + String.format("₱%,.2f", totalAssets));
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error loading dashboard: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 }
