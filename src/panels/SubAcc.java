@@ -1,13 +1,24 @@
 package panels;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class SubAcc  extends JPanel implements ActionListener {
 
     public SubAcc(){
         setLayout(new BorderLayout());
+         // Welcome Message
+        JLabel title = new JLabel("Sub Accounts", SwingConstants.CENTER);
+        title.setFont(new Font("Times New Roman", Font.BOLD, 28));
+        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        add(title, BorderLayout.NORTH);
+
+        // Center content
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 10, 40));
+
     }
 
 

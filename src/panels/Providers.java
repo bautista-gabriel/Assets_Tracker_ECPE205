@@ -1,13 +1,12 @@
 package panels;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import database.Database;
 
-public class Providers extends JPanel implements ActionListener {
-    private JLabel countLabel;
-    private JLabel average;
+public class Providers extends JPanel  {
 
     public  Providers() {
         setLayout(new BorderLayout());
@@ -25,7 +24,7 @@ public class Providers extends JPanel implements ActionListener {
 
         //Combo box para sa banks and e wallets
         String[] Providers = {
-                "---- Banks ----",
+                "---- Banks ----", //i=0
                 "BDO Unibank",
                 "Bank of the Philippine Islands (BPI)",
                 "Land Bank of the Philippines",
@@ -57,10 +56,25 @@ public class Providers extends JPanel implements ActionListener {
         ProvidersList.setMaximumSize(new Dimension(250, 30));
         ProvidersList.setPreferredSize(new Dimension(250, 30));
         ProvidersList.setSelectedIndex(0);
-        ProvidersList.addActionListener(this);
+       // ProvidersList.addActionListener(this);
         centerPanel.add(ProvidersList);
         centerPanel.add(Box.createVerticalStrut(20));
 
+        // text field for inputting amount
+        JTextField amountField = new JTextField();
+        amountField.setMaximumSize(new Dimension(250, 30));
+        amountField.setPreferredSize(new Dimension(250, 30));
+        amountField.setBorder(BorderFactory.createTitledBorder("Amount"));
+        centerPanel.add(amountField);
+        centerPanel.add(Box.createVerticalStrut(20));
+
+        String[] operations = {"Add", "Subtract"};
+        JComboBox<String> operationList = new JComboBox<>(operations);
+        operationList.setMaximumSize(new Dimension(250, 30));
+        operationList.setPreferredSize(new Dimension(250, 30));
+        centerPanel.add(operationList);
+        centerPanel.add(Box.createVerticalStrut(20));
+        
         //Button
         JButton saveBtn = new JButton("Save");
         saveBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -70,14 +84,55 @@ public class Providers extends JPanel implements ActionListener {
 
 
         add(centerPanel, BorderLayout.CENTER);
+
+        saveBtn.addActionListener(e -> {
+            String selected = ProvidersList.getSelectedItem().toString();
+            if (selected.equals("---- Banks ----") || selected.equals("---- E-Wallet ----")) {
+                JOptionPane.showMessageDialog(null, "Select a Bank/E-Wallet");
+                return;
+            }
+            if (amountField.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Input amount!");
+                return;
+            }
+            if (!isDouble(amountField.getText())) {
+                JOptionPane.showMessageDialog(null, "Only use numbers!");
+                return;
+            }
+            double amount = Double.parseDouble(amountField.getText());
+            if ("Subtract".equals(operationList.getSelectedItem())) {
+                amount = -amount;
+            }
+            String sql = "INSERT INTO main_accounts (provider_id, amount, updated_at) " +
+                    "SELECT id, ?, datetime('now') FROM providers WHERE name = ? " +
+                    "ON CONFLICT(provider_id) DO UPDATE SET " +
+                    "amount = main_accounts.amount + excluded.amount, updated_at = excluded.updated_at";
+            try (Connection conn = Database.getConnection();
+                 PreparedStatement pst = conn.prepareStatement(sql)) {
+
+                pst.setDouble(1, amount);
+                pst.setString(2, selected);
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Saved successfully");
+                amountField.setText("");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+            }
+        });
     }
 
+    //check niya kung input mo is num or not
+    public boolean isDouble(String input){
+        try{
+            Double.parseDouble(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
     private void refreshData() {
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-    }
 }
