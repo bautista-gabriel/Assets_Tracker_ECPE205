@@ -7,6 +7,7 @@ import javax.swing.*;
 import panels.Dashboard;
 import panels.Providers;
 import panels.SubAcc;
+import database.InitializeDatabase;
 
 /**
  */
@@ -83,6 +84,7 @@ public class MainFrame extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {
         }
+        InitializeDatabase.initialize();
         SwingUtilities.invokeLater(() -> {
             MainFrame frame = new MainFrame();
             frame.setVisible(true);
