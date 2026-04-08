@@ -1,16 +1,12 @@
 package app;
 
-import database.DatabaseConnection;
-import database.InitializeDatabase;
+import database.Database;
 import panels.AmountManagement;
 import panels.Dashboard;
 import panels.Providers;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class MainFrame extends JFrame {
 
@@ -27,8 +23,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        InitializeDatabase.initialize();
-        insertSampleDataIfEmpty();
+        Database.init();
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -38,7 +33,7 @@ public class MainFrame extends JFrame {
         providersPanel = new Providers((accountId, accountName) -> {
             subAccPanel.loadAccount(accountId);
             cardLayout.show(mainPanel, "SUBACC");
-        });
+        }, this::refreshHome);
 
         subAccPanel = new AmountManagement(
                 () -> {
@@ -65,6 +60,7 @@ public class MainFrame extends JFrame {
 
         homePanel.add(topPanel, BorderLayout.NORTH);
         homePanel.add(providersPanel, BorderLayout.CENTER);
+        dashboardPanel.setPreferredSize(new Dimension(0, 140));
         homePanel.add(dashboardPanel, BorderLayout.SOUTH);
 
         mainPanel.add(homePanel, "HOME");
@@ -78,19 +74,6 @@ public class MainFrame extends JFrame {
     private void refreshHome() {
         providersPanel.refresh();
         dashboardPanel.refreshTotal();
-    }
-
-    private void insertSampleDataIfEmpty() {
-        String countSql = "SELECT COUNT(*) AS total FROM accounts";
-        String insertSql = "INSERT INTO accounts (name, type, amount) VALUES (?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement countPs = conn.prepareStatement(countSql);
-             ResultSet rs = countPs.executeQuery()) {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {
