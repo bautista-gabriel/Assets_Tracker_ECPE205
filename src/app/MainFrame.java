@@ -1,93 +1,99 @@
 package app;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
+import database.DatabaseConnection;
+import database.InitializeDatabase;
+import panels.AmountManagement;
 import panels.Dashboard;
 import panels.Providers;
-import panels.SubAcc;
-import database.InitializeDatabase;
 
-/**
- */
+import javax.swing.*;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class MainFrame extends JFrame {
+
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+
+    private Providers providersPanel;
+    private Dashboard dashboardPanel;
+    private AmountManagement subAccPanel;
 
     public MainFrame() {
         setTitle("Asset Tracker");
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setMinimumSize(new Dimension(700, 500));
-        setLocationRelativeTo(null); // Center on screen
+        setLocationRelativeTo(null);
 
-        //add(new Providers(), BorderLayout.CENTER);
+        InitializeDatabase.initialize();
+        insertSampleDataIfEmpty();
 
-        JPanel SidePanel = new JPanel();
-            SidePanel.setPreferredSize(new Dimension(200, 0));
-            SidePanel.setLayout(new BoxLayout(SidePanel, BoxLayout.Y_AXIS));
-            SidePanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-            JButton dashboardBtn = new JButton("Dashboard");
-            dashboardBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-            dashboardBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-            JButton providersBtn = new JButton("Banks and E-Wallets");
-            providersBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-            providersBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-            JButton subAccBtn = new JButton("Sub Accounts");
-            subAccBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-            subAccBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        dashboardPanel = new Dashboard();
 
-            SidePanel.add(dashboardBtn);
-            SidePanel.add(Box.createVerticalStrut(10));
-            SidePanel.add(providersBtn);
-            SidePanel.add(Box.createVerticalStrut(10));
-            SidePanel.add(subAccBtn);
-
-
-            SidePanel.setBackground(Color.gray);
-            add(SidePanel, BorderLayout.WEST);
-
-             CardLayout cardLayout = new CardLayout();
-             JPanel mainPanel = new JPanel(cardLayout);
-
-            mainPanel.add(new Dashboard(), "Dashboard");
-            mainPanel.add(new Providers(), "Providers");
-            mainPanel.add(new SubAcc(), "SubAcc");
-
-             add(mainPanel, BorderLayout.CENTER);
-
-            dashboardBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    cardLayout.show(mainPanel, "Dashboard");
-                }
-            });
-
-            providersBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    cardLayout.show(mainPanel, "Providers");
-                }
-            });
-
-        subAccBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "SubAcc");
-            }
+        providersPanel = new Providers((accountId, accountName) -> {
+            subAccPanel.loadAccount(accountId);
+            cardLayout.show(mainPanel, "SUBACC");
         });
 
+        subAccPanel = new AmountManagement(
+                () -> {
+                    refreshHome();
+                    cardLayout.show(mainPanel, "HOME");
+                },
+                this::refreshHome
+        );
+
+        JPanel homePanel = new JPanel(new BorderLayout());
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JLabel title = new JLabel("Providers / Banks", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 20));
+
+        JButton addButton = new JButton("+ Add Bank / E-Wallet");
+        addButton.addActionListener(e -> {
+            providersPanel.addAccount();
+            refreshHome();
+        });
+
+        topPanel.add(title, BorderLayout.CENTER);
+        topPanel.add(addButton, BorderLayout.EAST);
+
+        homePanel.add(topPanel, BorderLayout.NORTH);
+        homePanel.add(providersPanel, BorderLayout.CENTER);
+        homePanel.add(dashboardPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(homePanel, "HOME");
+        mainPanel.add(subAccPanel, "SUBACC");
+
+        add(mainPanel);
+
+        refreshHome();
+    }
+
+    private void refreshHome() {
+        providersPanel.refresh();
+        dashboardPanel.refreshTotal();
+    }
+
+    private void insertSampleDataIfEmpty() {
+        String countSql = "SELECT COUNT(*) AS total FROM accounts";
+        String insertSql = "INSERT INTO accounts (name, type, amount) VALUES (?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement countPs = conn.prepareStatement(countSql);
+             ResultSet rs = countPs.executeQuery()) {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {
-        }
-        InitializeDatabase.initialize();
-        SwingUtilities.invokeLater(() -> {
-            MainFrame frame = new MainFrame();
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
 }
