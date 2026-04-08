@@ -2,6 +2,7 @@ package app;
 
 import database.DatabaseConnection;
 import database.InitializeDatabase;
+import panels.AmountManagement;
 import panels.Dashboard;
 import panels.Providers;
 
@@ -18,7 +19,7 @@ public class MainFrame extends JFrame {
 
     private Providers providersPanel;
     private Dashboard dashboardPanel;
-    private SubAcc subAccPanel;
+    private AmountManagement subAccPanel;
 
     public MainFrame() {
         setTitle("Asset Tracker");
@@ -39,7 +40,7 @@ public class MainFrame extends JFrame {
             cardLayout.show(mainPanel, "SUBACC");
         });
 
-        subAccPanel = new SubAcc(
+        subAccPanel = new AmountManagement(
                 () -> {
                     refreshHome();
                     cardLayout.show(mainPanel, "HOME");
