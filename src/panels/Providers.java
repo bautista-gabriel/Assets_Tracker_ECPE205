@@ -1,10 +1,12 @@
 package panels;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import database.Database;
+import database.DatabaseConnection;
 
 public class Providers extends JPanel  {
 
@@ -67,13 +69,6 @@ public class Providers extends JPanel  {
         amountField.setBorder(BorderFactory.createTitledBorder("Amount"));
         centerPanel.add(amountField);
         centerPanel.add(Box.createVerticalStrut(20));
-
-        String[] operations = {"Add", "Subtract"};
-        JComboBox<String> operationList = new JComboBox<>(operations);
-        operationList.setMaximumSize(new Dimension(250, 30));
-        operationList.setPreferredSize(new Dimension(250, 30));
-        centerPanel.add(operationList);
-        centerPanel.add(Box.createVerticalStrut(20));
         
         //Button
         JButton saveBtn = new JButton("Save");
@@ -85,38 +80,36 @@ public class Providers extends JPanel  {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        saveBtn.addActionListener(e -> {
-            String selected = ProvidersList.getSelectedItem().toString();
-            if (selected.equals("---- Banks ----") || selected.equals("---- E-Wallet ----")) {
-                JOptionPane.showMessageDialog(null, "Select a Bank/E-Wallet");
-                return;
-            }
-            if (amountField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Input amount!");
-                return;
-            }
-            if (!isDouble(amountField.getText())) {
-                JOptionPane.showMessageDialog(null, "Only use numbers!");
-                return;
-            }
-            double amount = Double.parseDouble(amountField.getText());
-            if ("Subtract".equals(operationList.getSelectedItem())) {
-                amount = -amount;
-            }
-            String sql = "INSERT INTO main_accounts (provider_id, amount, updated_at) " +
-                    "SELECT id, ?, datetime('now') FROM providers WHERE name = ? " +
-                    "ON CONFLICT(provider_id) DO UPDATE SET " +
-                    "amount = main_accounts.amount + excluded.amount, updated_at = excluded.updated_at";
-            try (Connection conn = Database.getConnection();
-                 PreparedStatement pst = conn.prepareStatement(sql)) {
+        saveBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(isDouble(amountField.getText()) && ProvidersList.getSelectedIndex()!=-1 && ProvidersList.getSelectedIndex()!=-0
+                        && ProvidersList.getSelectedIndex()!=21){
+                    Double amount = Double.parseDouble(amountField.getText());
+                    String provider_name = ProvidersList.getSelectedItem().toString();
+                    String sql = "INSERT INTO assets (provider_name, amount) VALUES (?,?)";
+                    try (Connection conn = DatabaseConnection.getConnection();
+                         PreparedStatement pst = conn.prepareStatement(sql)) {
 
-                pst.setDouble(1, amount);
-                pst.setString(2, selected);
-                pst.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Saved successfully");
-                amountField.setText("");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+                        pst.setString(1, provider_name);
+                        pst.setDouble(2, amount);
+
+                        pst.executeUpdate();
+
+                        JOptionPane.showMessageDialog(null, "Saved successfully");
+                        amountField.setText("");
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage());
+                    }
+                }else if(ProvidersList.getSelectedItem().toString().equals("---- Banks ----") ||
+                        ProvidersList.getSelectedItem().toString().equals("---- E-Wallet ----") ){
+                    JOptionPane.showMessageDialog(null, "Select a Bank/E-Wallet");
+                }else if (amountField.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null,"Input amount!");
+                }else if(!isDouble(amountField.getText())){
+                    JOptionPane.showMessageDialog(null,"Only use numbers!");
+                }
             }
         });
     }
