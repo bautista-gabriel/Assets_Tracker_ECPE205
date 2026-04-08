@@ -6,8 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import panels.Dashboard;
 import panels.Providers;
-import panels.SubAcc;
-import model.MainAssetAccount;
+import panels.AmountManagement;
 import database.InitializeDatabase;
 
 /**
@@ -58,7 +57,7 @@ public class MainFrame extends JFrame {
 
             mainPanel.add(new Dashboard(), "Dashboard");
             mainPanel.add(new Providers(), "Providers");
-            mainPanel.add(new SubAcc(), "SubAcc");
+            mainPanel.add(new AmountManagement(), "SubAcc");
            // mainPanel.add(new MainAssetAccount(), "MainAssetAccount");
 
              add(mainPanel, BorderLayout.CENTER);

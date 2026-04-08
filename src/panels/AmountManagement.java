@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class SubAcc  extends JPanel implements ActionListener {
+public class AmountManagement extends JPanel implements ActionListener {
 
-    public SubAcc(){
+    public AmountManagement(){
         setLayout(new BorderLayout());
          // Welcome Message
         JLabel title = new JLabel("Sub Accounts", SwingConstants.CENTER);
