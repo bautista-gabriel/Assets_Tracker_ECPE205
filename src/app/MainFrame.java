@@ -8,9 +8,7 @@ import panels.Providers;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 
 public class MainFrame extends JFrame {
 
@@ -28,7 +26,6 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
 
         InitializeDatabase.initialize();
-        insertSampleDataIfEmpty();
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -78,19 +75,6 @@ public class MainFrame extends JFrame {
     private void refreshHome() {
         providersPanel.refresh();
         dashboardPanel.refreshTotal();
-    }
-
-    private void insertSampleDataIfEmpty() {
-        String countSql = "SELECT COUNT(*) AS total FROM accounts";
-        String insertSql = "INSERT INTO accounts (name, type, amount) VALUES (?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement countPs = conn.prepareStatement(countSql);
-             ResultSet rs = countPs.executeQuery()) {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {
