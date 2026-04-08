@@ -16,7 +16,7 @@ public class Dashboard extends JPanel {
     public Dashboard() {
         setLayout(new BorderLayout());
 
-        // Welcome Message
+        //title
         JLabel title = new JLabel("Dashboard", SwingConstants.CENTER);
         title.setFont(new Font("Times New Roman", Font.BOLD, 28));
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
