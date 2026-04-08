@@ -92,7 +92,10 @@ public class AmountManagement extends JPanel {
     public void loadAccount(int accountId) {
         currentAccountId = accountId;
 
-        String sql = "SELECT name, type, amount FROM accounts WHERE id = ?";
+        String sql = "SELECT p.name, p.type, COALESCE(ma.amount, 0) AS amount " +
+                "FROM providers p " +
+                "LEFT JOIN main_accounts ma ON ma.provider_id = p.id " +
+                "WHERE p.id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -131,13 +134,16 @@ public class AmountManagement extends JPanel {
             return;
         }
 
-        String sql = "UPDATE accounts SET amount = ? WHERE id = ?";
+        String sql = "INSERT INTO main_accounts (provider_id, amount, updated_at) " +
+                "VALUES (?, ?, datetime('now')) " +
+                "ON CONFLICT(provider_id) DO UPDATE SET " +
+                "amount = excluded.amount, updated_at = excluded.updated_at";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setDouble(1, amount);
-            ps.setInt(2, currentAccountId);
+            ps.setInt(1, currentAccountId);
+            ps.setDouble(2, amount);
             ps.executeUpdate();
 
             onDataChanged.run();
@@ -170,7 +176,7 @@ public class AmountManagement extends JPanel {
             return;
         }
 
-        String sql = "INSERT INTO sub_accounts (account_id, name, amount) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO sub_accounts (provider_id, name, amount) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -198,7 +204,10 @@ public class AmountManagement extends JPanel {
         }
 
         int dashIndex = selected.indexOf(" | ID=");
-        if (dashIndex == -1) return;
+        if (dashIndex == -1) {
+            JOptionPane.showMessageDialog(this, "Select a sub-account first.");
+            return;
+        }
 
         int subId = Integer.parseInt(selected.substring(dashIndex + 6));
 
@@ -223,7 +232,7 @@ public class AmountManagement extends JPanel {
 
         if (currentAccountId == -1) return;
 
-        String sql = "SELECT id, name, amount FROM sub_accounts WHERE account_id = ? ORDER BY id ASC";
+        String sql = "SELECT id, name, amount FROM sub_accounts WHERE provider_id = ? ORDER BY id ASC";
         double total = 0;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -238,7 +247,7 @@ public class AmountManagement extends JPanel {
                     double amount = rs.getDouble("amount");
 
                     total += amount;
-                    subListModel.addElement(name + " - ₱" + String.format("%,.2f", amount));
+                    subListModel.addElement(name + " - ₱" + String.format("%,.2f", amount) + " | ID=" + subId);
                 }
             }
 
