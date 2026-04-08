@@ -28,7 +28,7 @@ public class Dashboard extends JPanel {
     }
 
     public void refreshTotal() {
-        String sql = "SELECT IFNULL(SUM(amount), 0) AS total FROM accounts";
+        String sql = "SELECT IFNULL(SUM(amount), 0) AS total FROM accounts)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
