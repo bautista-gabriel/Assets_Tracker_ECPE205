@@ -1,11 +1,11 @@
-package panels;
+package model;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import database.DBConnection;
+import database.DatabaseConnection;
 
 public class MainAssetAccount extends JPanel {
 
@@ -45,7 +45,7 @@ public class MainAssetAccount extends JPanel {
 
         String sql = "SELECT SUM(amount) AS total FROM providers";
 
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 
