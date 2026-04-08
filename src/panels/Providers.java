@@ -17,11 +17,7 @@ public class Providers extends JPanel {
     private JPanel listPanel;
     private OnAccountClick listener;
 
-<<<<<<< HEAD
-    public Providers() {
-=======
     public Providers(OnAccountClick listener) {
->>>>>>> main
         this.listener = listener;
 
         setLayout(new BorderLayout());
