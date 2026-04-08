@@ -127,6 +127,25 @@ public class Providers extends JPanel {
                 JOptionPane.PLAIN_MESSAGE
         );
 
+        String sql1 = "SELECT name FROM providers";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql1);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String name = rs.getString("name");
+                if(nameField.getText().trim().equalsIgnoreCase(name.trim())){
+                    JOptionPane.showMessageDialog(this,"Bank/E-Wallet Exists!");
+                }
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (result == JOptionPane.OK_OPTION) {
             String name = nameField.getText().trim();
             String type = typeBox.getSelectedItem().toString();
@@ -135,6 +154,8 @@ public class Providers extends JPanel {
             if (name.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Name is required.");
                 return;
+            }else if(name == sql1){
+                JOptionPane.showMessageDialog(null,"Bank Exists!!!");
             }
 
             double amount = 0;
