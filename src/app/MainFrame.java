@@ -7,6 +7,7 @@ import javax.swing.*;
 import panels.Dashboard;
 import panels.Providers;
 import panels.SubAcc;
+import model.MainAssetAccount;
 import database.InitializeDatabase;
 
 /**
@@ -36,12 +37,17 @@ public class MainFrame extends JFrame {
             JButton subAccBtn = new JButton("Sub Accounts");
             subAccBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
             subAccBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
+//            JButton mainAssBtn = new JButton("Main Asset Account");
+//            mainAssBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+//             mainAssBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             SidePanel.add(dashboardBtn);
             SidePanel.add(Box.createVerticalStrut(10));
             SidePanel.add(providersBtn);
             SidePanel.add(Box.createVerticalStrut(10));
             SidePanel.add(subAccBtn);
+            SidePanel.add(Box.createVerticalStrut(10));
+            //SidePanel.add(mainAssBtn);
 
 
             SidePanel.setBackground(Color.gray);
@@ -53,6 +59,7 @@ public class MainFrame extends JFrame {
             mainPanel.add(new Dashboard(), "Dashboard");
             mainPanel.add(new Providers(), "Providers");
             mainPanel.add(new SubAcc(), "SubAcc");
+           // mainPanel.add(new MainAssetAccount(), "MainAssetAccount");
 
              add(mainPanel, BorderLayout.CENTER);
 
@@ -76,6 +83,13 @@ public class MainFrame extends JFrame {
                 cardLayout.show(mainPanel, "SubAcc");
             }
         });
+
+//            mainAssBtn.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    cardLayout.show(mainPanel, "MainAssetAccount");
+//                }
+//            });
 
     }
 

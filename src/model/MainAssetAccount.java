@@ -43,7 +43,7 @@ public class MainAssetAccount extends JPanel {
     public void loadTotalAssets() {
         double totalAssets = 0.0;
 
-        String sql = "SELECT SUM(amount) AS total FROM providers";
+        String sql = "SELECT SUM(amount) AS total FROM assets";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
