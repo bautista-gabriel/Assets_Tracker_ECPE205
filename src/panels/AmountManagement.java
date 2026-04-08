@@ -247,7 +247,7 @@ public class AmountManagement extends JPanel {
                     double amount = rs.getDouble("amount");
 
                     total += amount;
-                    subListModel.addElement(name + " - ₱" + String.format("%,.2f", amount));
+                    subListModel.addElement(name + " - ₱" + String.format("%,.2f", amount) + " | ID=" + subId);
                 }
             }
 
