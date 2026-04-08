@@ -18,7 +18,7 @@ public class SubAcc extends JPanel implements ActionListener {
     private static class SubAccountTableModel extends AbstractTableModel {
         private final String[] COLUMNS = {
                 "Parent Account", "Account Name", "Account Number",
-                "Type", "Balance", "Currency", "Status"
+                "Type", "Balance", "Status"
         };
         private List<SubAccount> data = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class SubAcc extends JPanel implements ActionListener {
 
         public SubAccount getRow(int row)             { return data.get(row); }
         public void updateRow(int row, SubAccount sa) { data.set(row, sa); fireTableRowsUpdated(row, row); }
-        public void removeRow(int row)                { data.remove(row); fireTableRowsDeleted(row, row); }
+        //public void removeRow(int row)                { data.remove(row); fireTableRowsDeleted(row, row); }
 
         @Override public int    getRowCount()          { return data.size(); }
         @Override public int    getColumnCount()       { return COLUMNS.length; }
@@ -43,9 +43,8 @@ public class SubAcc extends JPanel implements ActionListener {
                 case 1: return sa.getAccountName();
                 case 2: return sa.getAccountNumber();
                 case 3: return sa.getAccountType();
-                case 4: return String.format("%.2f", sa.getBalance());
-                case 5: return sa.getCurrency();
-                case 6: return sa.isActive() ? "Active" : "Inactive";
+                case 4: return String.format("₱ %.2f", sa.getBalance());
+                case 5: return sa.isActive() ? "Active" : "Inactive";
                 default: return "";
             }
         }
@@ -83,9 +82,8 @@ public class SubAcc extends JPanel implements ActionListener {
             "ShopeePay"
     };
     private static final String[] ACCOUNT_TYPES = {
-            "Savings", "Checking", "Wallet", "Investment", "Business"
+            "Business", "Checking", "Emergencies", "Investment", "Savings", "Wallet"
     };
-    private static final String[] CURRENCIES = { "PHP", "USD", "EUR", "GBP", "JPY" };
 
     private static final Color TOOLBAR_BG = new Color(44, 62, 80);
     private static final Color BTN_ADD    = new Color(39, 174, 96);
@@ -248,7 +246,7 @@ public class SubAcc extends JPanel implements ActionListener {
             table.getColumnModel().getColumn(i).setCellRenderer(rowRenderer);
 
         // Status column — coloured text
-        table.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+        table.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value,
                                                            boolean sel, boolean focus, int row, int col) {
@@ -265,7 +263,7 @@ public class SubAcc extends JPanel implements ActionListener {
         });
 
         // Minimum column widths — AUTO_RESIZE handles distribution beyond these
-        int[] minWidths = { 80, 90, 90, 65, 65, 50, 60 };
+        int[] minWidths = { 80, 90, 90, 65, 65, 60 };
         for (int i = 0; i < minWidths.length; i++)
             table.getColumnModel().getColumn(i).setMinWidth(minWidths[i]);
 
@@ -298,7 +296,7 @@ public class SubAcc extends JPanel implements ActionListener {
 
         lblTotal   = new JLabel("Sub-accounts: 0");
         lblActive  = new JLabel("Active: 0", SwingConstants.CENTER);
-        lblBalance = new JLabel("Total Balance: PHP 0.00", SwingConstants.RIGHT);
+        lblBalance = new JLabel("Total Balance: ₱ 0.00", SwingConstants.RIGHT);
 
         Font  f = new Font("SansSerif", Font.BOLD, 11);
         Color c = new Color(44, 62, 80);
@@ -371,7 +369,6 @@ public class SubAcc extends JPanel implements ActionListener {
         JTextField        txtNumber = new JTextField(16);
         JComboBox<String> cmbType   = new JComboBox<>(ACCOUNT_TYPES);
         JTextField        txtBal    = new JTextField(16);
-        JComboBox<String> cmbCurr   = new JComboBox<>(CURRENCIES);
         JCheckBox         chkActive = new JCheckBox("Active", true);
 
         if (existing != null) {
@@ -379,8 +376,7 @@ public class SubAcc extends JPanel implements ActionListener {
             txtName.setText(existing.getAccountName());
             txtNumber.setText(existing.getAccountNumber());
             cmbType.setSelectedItem(existing.getAccountType());
-            txtBal.setText(String.valueOf(existing.getBalance()));
-            cmbCurr.setSelectedItem(existing.getCurrency());
+            txtBal.setText(String.format("₱ %.2f", existing.getBalance()));
             chkActive.setSelected(existing.isActive());
         }
 
@@ -393,10 +389,10 @@ public class SubAcc extends JPanel implements ActionListener {
 
         String[]    labels = {
                 "Parent Account:", "Account Name:", "Account Number:",
-                "Account Type:", "Balance:", "Currency:", "Status:"
+                "Account Type:", "Balance:", "Status:"
         };
         Component[] fields = {
-                cmbParent, txtName, txtNumber, cmbType, txtBal, cmbCurr, chkActive
+                cmbParent, txtName, txtNumber, cmbType, txtBal, chkActive
         };
 
         for (int i = 0; i < labels.length; i++) {
@@ -423,6 +419,7 @@ public class SubAcc extends JPanel implements ActionListener {
         }
         double balance;
         try {
+            balStr = balStr.replace("₱", "").replace(",", "").trim();
             balance = Double.parseDouble(balStr);
             if (balance < 0) { warn("Balance cannot be negative."); return null; }
         } catch (NumberFormatException ex) {
@@ -434,7 +431,6 @@ public class SubAcc extends JPanel implements ActionListener {
                 name, number,
                 (String) cmbType.getSelectedItem(),
                 balance,
-                (String) cmbCurr.getSelectedItem(),
                 chkActive.isSelected()
         );
     }
@@ -473,7 +469,7 @@ public class SubAcc extends JPanel implements ActionListener {
         }
         lblTotal.setText("Sub-accounts: " + total);
         lblActive.setText("Active: " + active);
-        lblBalance.setText(String.format("Total Balance: PHP %.2f", sum));
+        lblBalance.setText(String.format("Total Balance: ₱ %.2f", sum));
     }
 
     

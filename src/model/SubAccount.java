@@ -6,17 +6,15 @@ public class SubAccount {
     private String  accountNumber;
     private String  accountType;
     private double  balance;
-    private String  currency;
     private boolean active;
 
     public SubAccount(String parentAccount, String accountName,String accountNumber, String accountType,
-                      double balance, String currency, boolean active) {
+                      double balance, boolean active) {
         this.parentAccount = parentAccount;
         this.accountName   = accountName;
         this.accountNumber = accountNumber;
         this.accountType   = accountType;
         this.balance       = balance;
-        this.currency      = currency;
         this.active        = active;
     }
 
@@ -33,9 +31,6 @@ public class SubAccount {
     }
     public double  getBalance(){
         return balance;
-    }
-    public String  getCurrency(){
-        return currency;
     }
     public boolean isActive(){
         return active;
@@ -54,9 +49,6 @@ public class SubAccount {
     }
     public void setBalance(double v){
         balance = v;
-    }
-    public void setCurrency(String v){
-        currency = v;
     }
     public void setActive(boolean v){
         active = v;
