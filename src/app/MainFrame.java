@@ -88,25 +88,6 @@ public class MainFrame extends JFrame {
              PreparedStatement countPs = conn.prepareStatement(countSql);
              ResultSet rs = countPs.executeQuery()) {
 
-            if (rs.next() && rs.getInt("total") == 0) {
-                try (PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
-                    insertPs.setString(1, "BPI");
-                    insertPs.setString(2, "Bank");
-                    insertPs.setDouble(3, 1000);
-                    insertPs.executeUpdate();
-
-                    insertPs.setString(1, "GCash");
-                    insertPs.setString(2, "E-Wallet");
-                    insertPs.setDouble(3, 2500);
-                    insertPs.executeUpdate();
-
-                    insertPs.setString(1, "Maya");
-                    insertPs.setString(2, "E-Wallet");
-                    insertPs.setDouble(3, 1800);
-                    insertPs.executeUpdate();
-                }
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
