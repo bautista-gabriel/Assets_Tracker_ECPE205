@@ -15,8 +15,8 @@ public class AmountManagement extends JPanel {
     private JTextField mainAmountField;
     private JLabel subTotalLabel;
 
-    private DefaultListModel<String> subListModel;
-    private JList<String> subList;
+    private DefaultListModel<SubAccountEntry> subListModel;
+    private JList<SubAccountEntry> subList;
 
     private int currentAccountId = -1;
 
@@ -197,19 +197,12 @@ public class AmountManagement extends JPanel {
     private void removeSelectedSubAccount() {
         if (currentAccountId == -1) return;
 
-        String selected = subList.getSelectedValue();
+        SubAccountEntry selected = subList.getSelectedValue();
         if (selected == null) {
             JOptionPane.showMessageDialog(this, "Select a sub-account first.");
             return;
         }
-
-        int dashIndex = selected.indexOf(" | ID=");
-        if (dashIndex == -1) {
-            JOptionPane.showMessageDialog(this, "Select a sub-account first.");
-            return;
-        }
-
-        int subId = Integer.parseInt(selected.substring(dashIndex + 6));
+        int subId = selected.id;
 
         String sql = "DELETE FROM sub_accounts WHERE id = ?";
 
@@ -247,7 +240,7 @@ public class AmountManagement extends JPanel {
                     double amount = rs.getDouble("amount");
 
                     total += amount;
-                    subListModel.addElement(name + " - ₱" + String.format("%,.2f", amount));
+                    subListModel.addElement(new SubAccountEntry(subId, name, amount));
                 }
             }
 
@@ -256,5 +249,22 @@ public class AmountManagement extends JPanel {
         }
 
         subTotalLabel.setText(String.format("Sub Total: ₱%,.2f", total));
+    }
+
+    private static class SubAccountEntry {
+        private final int id;
+        private final String name;
+        private final double amount;
+
+        private SubAccountEntry(int id, String name, double amount) {
+            this.id = id;
+            this.name = name;
+            this.amount = amount;
+        }
+
+        @Override
+        public String toString() {
+            return name + " - ₱" + String.format("%,.2f", amount);
+        }
     }
 }
